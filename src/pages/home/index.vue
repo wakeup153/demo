@@ -6,6 +6,11 @@
 import HelloWorld from '@/components/HelloWorld'
 export default {
   name: 'Home',
+  data () {
+    return {
+
+    }
+  },
   components: {
     HelloWorld
   }
