@@ -3,16 +3,17 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-// import VueSocket from 'vue-socket.io'
-// import socketIo from 'socket.io-client'
 import store from '@/store'
+import vueSource from 'vue-source'
+// import VueSocketio from 'vue-socket.io'
+// import socketio from 'socket.io-client'
 
 import 'bootstrap/dist/js/bootstrap.min.js'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+// Vue.use(VueSocketio, socketio('http://127.0.0.1:6879'))
 Vue.config.productionTip = false
-// Vue.use(VueSocket, socketIo('http://127.0.0.1:6879'), store)
-
+Vue.prototype.$http = vueSource
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
