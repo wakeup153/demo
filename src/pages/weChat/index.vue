@@ -1,8 +1,8 @@
 <template>
   <div class="container-fluid" style="margin: 0; padding: 0;">
-    <!-- <login v-if="isShowLogin" @hideLogin="hideLogin"></login>
-    <register v-if="isShowReg"></register> -->
-    <panel></panel>
+    <login v-if="isShowLogin" @hideLogin="hideLogin"></login>
+    <register v-if="isShowReg"></register>
+    <panel v-if="isShoPanel"></panel>
   </div>
 </template>
 <script>
@@ -11,13 +11,18 @@ export default {
   data () {
     return {
       isShowLogin: true,
-      isShowReg: false
+      isShowReg: false,
+      isShoPanel: false
     }
   },
   created () {
     this.eventBus.$on('showLogin', val => {
       this.isShowLogin = val
       this.isShowReg = false
+    })
+    this.eventBus.$on('showPanel', () => {
+      this.isShowLogin = false
+      this.isShoPanel = true
     })
   },
   methods: {

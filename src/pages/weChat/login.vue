@@ -1,5 +1,5 @@
 <template>
-  <form class="form-horizontal col-xs-11 col-sm-11 col-md-10 col-lg-3">
+  <form class="form-horizontal col-xs-11 col-sm-11 col-md-10 col-lg-3"  @submit.prevent="login">
     <h4>登录</h4>
     <div class="form-group">
       <label class="sr-only" for="account"></label>
@@ -57,6 +57,9 @@ export default {
     userRegister () {
       // 隐藏父组件
       this.$emit('hideLogin', false)
+    },
+    login () {
+      this.eventBus.$emit('showPanel')
     }
   }
 }
