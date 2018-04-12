@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = vueSource
+Vue.prototype.eventBus = new Vue()
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
