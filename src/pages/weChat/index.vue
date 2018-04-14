@@ -1,18 +1,21 @@
 <template>
   <div class="container-fluid" style="margin: 0; padding: 0;">
-    <login v-if="isShowLogin" @hideLogin="hideLogin"></login>
-    <register v-if="isShowReg"></register>
-    <panel v-if="isShoPanel"></panel>
+    <!-- <login v-if="isShowLogin" @hideLogin="hideLogin"></login>
+    <register v-if="isShowReg"></register> -->
+    <!-- <panel v-if="isShoPanel"></panel> -->
+    <!-- <chat></chat> -->
+    <main-panel></main-panel>
   </div>
 </template>
 <script>
+import mainPanel from './mainPanel'
 export default {
   name: 'weChat',
   data () {
     return {
       isShowLogin: true,
       isShowReg: false,
-      isShoPanel: false
+      isShoPanel: true
     }
   },
   created () {
@@ -34,7 +37,8 @@ export default {
   components: {
     login: () => import('./login'),
     register: () => import('./register'),
-    panel: () => import('./panel')
+    chat: () => import('./chat'),
+    mainPanel
   }
 }
 </script>
