@@ -5,6 +5,7 @@
         <div class="row header">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             {{title}}
+            <span class="glyphicon glyphicon-search" v-if="isShowSearch"></span>
           </div>
         </div>
         <div class="row content">
@@ -17,7 +18,7 @@
         <div class="row footer">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <ul class="list-unstyled bar-control">
-              <li v-for="(bars, key) in barControlList" :key="key" @click="toggleBar(key)">
+              <li ref="bar" v-for="(bars, key) in barControlList" :key="key" @click="toggleBar(key)">
                 <img :src="bars.icon" ref="icons" width="30"><br>
                 {{bars.text}}
               </li>
@@ -29,15 +30,16 @@
   </div>
 </template>
 <script>
-import message from './message'
-import contacts from './contacts'
-import settings from './settings'
+import message from '@/pages/weChat/message'
+import contacts from '@/pages/weChat/contacts'
+import settings from '@/pages/weChat/settings'
 
 export default {
   name: 'MainPanel',
   data () {
     return {
       title: '消息',
+      isShowSearch: false,
       barControlList: [
         {
           text: '消息',
@@ -64,6 +66,7 @@ export default {
   },
   mounted () {
     this.$refs.icons[0].src = '/static/' + this.icons[0]
+    this.$refs.bar[0].style.background = 'radial-gradient(circle at center, #333, #272727)'
   },
   methods: {
     toggleBar (index) {
@@ -71,9 +74,20 @@ export default {
       for (let i = 0; i < icons.length; i++) {
         icons[i].src = this.barControlList[i].icon
         this.barControlList[i].isShow = false
+        this.$refs.bar[i].style.background = '#2E3238'
       }
+      if (index === 1) {
+        this.isShowSearch = true
+      } else {
+        this.isShowSearch = false
+      }
+      // 更改标题文字
       this.title = this.barControlList[index].text
+      // 更改点击图片
       icons[index].src = '/static/' + this.icons[index]
+      // 更改点击的歼击背景颜色
+      this.$refs.bar[index].style.background = 'radial-gradient(circle at center, #333, #272727)'
+      // 显示点击的组件
       this.barControlList[index].isShow = true
     }
   },
@@ -92,6 +106,7 @@ export default {
 }
 .container-fluid > .row {
   position: relative;
+  overflow: hidden;
   height: 100%;
 }
 .container-fluid .row {
@@ -111,17 +126,24 @@ export default {
   background: #2E3238;
   text-align: center;
   padding: 10px 0;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.container-fluid > .row > .chat-panel .header .glyphicon-search {
+  position: absolute;
+  right: 14px;
+  cursor: pointer;
 }
 .container-fluid > .row > .chat-panel .content {
-  height: 91%;
   background: #fff;
-  overflow-y: auto;
+  height: 83%;
+  overflow-y: scroll;
 }
 .container-fluid > .row > .chat-panel .footer {
   position: fixed;
   width: 100%;
   bottom: 0;
-  background: #2E3238;
+  background: linear-gradient(left top, #4F4F4F, #272727);
 }
 .container-fluid > .row > .chat-panel .footer .bar-control {
   height: 100%;
@@ -133,20 +155,28 @@ export default {
   width: 33.333%;
   float: left;
   font-size: 0.8em;
-  border-right: 1.6px solid #666;
+  border-right: 1px solid #666;
   cursor: pointer;
 }
 .container-fluid > .row > .chat-panel .footer .bar-control li:last-child {
   border: none;
 }
 @media screen and (max-width: 768px){
+  .container-fluid {
+    background: #fff;
+  }
   .container-fluid > .row > .chat-panel {
     height: 100%;
     margin: 0;
     padding: 0;
   }
-  .container-fluid > .row > .chat-panel .header{
-    padding: 6px;
+  .container-fluid > .row > .chat-panel .header {
+    border-top-left-radius: 0px;
   }
+}
+@media screen and (min-width: 900px){
+ .container-fluid > .row > .chat-panel .content {
+   height: 86%;
+ }
 }
 </style>

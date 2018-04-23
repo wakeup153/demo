@@ -1,10 +1,10 @@
 <template>
   <div class="container-fluid" style="margin: 0; padding: 0;">
-    <!-- <login v-if="isShowLogin" @hideLogin="hideLogin"></login>
-    <register v-if="isShowReg"></register> -->
+    <login v-if="isShowLogin" @hideLogin="hideLogin"></login>
+    <register v-if="isShowReg"></register>
     <!-- <panel v-if="isShoPanel"></panel> -->
     <!-- <chat></chat> -->
-    <main-panel></main-panel>
+    <!-- <main-panel></main-panel> -->
   </div>
 </template>
 <script>
