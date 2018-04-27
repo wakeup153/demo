@@ -1,6 +1,6 @@
 <template>
   <ul class="message_list">
-    <li v-for="(entries, key) in msgList" :key="key">
+    <li v-for="(entries, key) in message" :key="key" @click="sendMessage(key)">
       <div class="m-details">
         <img :src="entries.headshot" width="36">
         <div>
@@ -12,11 +12,13 @@
   </ul>
 </template>
 <script>
+import { createNamespacedHelpers } from 'vuex'
+const {mapState, mapActions} = createNamespacedHelpers('socketStore')
 export default {
   name: 'Message',
   data () {
     return {
-      msgList: [
+      message: [
         {
           sid: 1,
           headshot: '/static/5c4158249f09e37b!400x400_big.jpg',
@@ -45,75 +47,24 @@ export default {
           sid: 5,
           headshot: '/static/3361881f605ec7c0!400x400_big.jpg',
           nickname: 'Jack',
-          msg: 'hello'
-        },
-        {
-          sid: 6,
-          headshot: '/static/836364674e170a60!400x400_big.jpg',
-          nickname: 'rose',
-          msg: 'hello'
-        },
-        {
-          sid: 7,
-          headshot: '/static/de655590056bb200!400x400_big.jpg',
-          nickname: 'ben',
-          msg: 'hello'
-        },
-        {
-          sid: 8,
-          headshot: '/static/ec560722511c5c1c!400x400_big.jpg',
-          nickname: 'helun',
-          msg: 'hello'
-        },
-        {
-          sid: 1,
-          headshot: '/static/5c4158249f09e37b!400x400_big.jpg',
-          nickname: '张三',
-          msg: 'hello'
-        },
-        {
-          sid: 2,
-          headshot: '/static/6f5c99b7f42acf8e!400x400_big.jpg',
-          nickname: '李四',
-          msg: 'hello'
-        },
-        {
-          sid: 3,
-          headshot: '/static/45fe855ea13c2ef6!400x400_big.jpg',
-          nickname: '王五',
-          msg: 'hello'
-        },
-        {
-          sid: 4,
-          headshot: '/static/57d03cca7792f6e9!400x400_big.jpg',
-          nickname: 'LEO',
-          msg: 'hello'
-        },
-        {
-          sid: 5,
-          headshot: '/static/3361881f605ec7c0!400x400_big.jpg',
-          nickname: 'Jack',
-          msg: 'hello'
-        },
-        {
-          sid: 6,
-          headshot: '/static/836364674e170a60!400x400_big.jpg',
-          nickname: 'rose',
-          msg: 'hello'
-        },
-        {
-          sid: 7,
-          headshot: '/static/de655590056bb200!400x400_big.jpg',
-          nickname: 'ben',
-          msg: 'hello'
-        },
-        {
-          sid: 8,
-          headshot: '/static/ec560722511c5c1c!400x400_big.jpg',
-          nickname: 'helun',
           msg: 'hello'
         }
       ]
+    }
+  },
+  computed: {
+    ...mapState([
+      'count',
+      'personInfor'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'updateInfor'
+    ]),
+    sendMessage (val) {
+      this.updateInfor(this.message[val])
+      this.eventBus.$emit('showChat', this.message[val])
     }
   }
 }

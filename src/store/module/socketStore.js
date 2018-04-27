@@ -1,16 +1,23 @@
 const state = {
-  count: 0
+  count: 0,
+  personInfor: {}
 }
 
 const mutations = {
   increment (state) {
     state.count++
+  },
+  updateInfor (state, obj) {
+    state.personInfor = obj
   }
 }
 
 const actions = {
-  increment ({commit}) {
-    commit('increment')
+  increment (ctx) {
+    ctx.commit('increment')
+  },
+  updateInfor (ctx, obj) {
+    ctx.commit('updateInfor', obj)
   }
 }
 

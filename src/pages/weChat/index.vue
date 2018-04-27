@@ -3,19 +3,21 @@
     <login v-if="isShowLogin" @hideLogin="hideLogin"></login>
     <register v-if="isShowReg"></register>
     <!-- <panel v-if="isShoPanel"></panel> -->
-    <!-- <chat></chat> -->
-    <!-- <main-panel></main-panel> -->
+    <chat v-if="isShowChat"></chat>
+    <main-panel v-if="isShowPanel"></main-panel>
   </div>
 </template>
 <script>
 import mainPanel from './mainPanel'
+
 export default {
   name: 'weChat',
   data () {
     return {
       isShowLogin: true,
       isShowReg: false,
-      isShoPanel: true
+      isShowPanel: false,
+      isShowChat: false
     }
   },
   created () {
@@ -25,7 +27,15 @@ export default {
     })
     this.eventBus.$on('showPanel', () => {
       this.isShowLogin = false
-      this.isShoPanel = true
+      this.isShowPanel = true
+    })
+    this.eventBus.$on('showChat', () => {
+      this.isShowPanel = false
+      this.isShowChat = true
+    })
+    this.eventBus.$on('returnMainPanel', () => {
+      this.isShowPanel = true
+      this.isShowChat = false
     })
   },
   methods: {
@@ -47,7 +57,7 @@ export default {
 .container-fluid {
   width: 100%;
   height: 100%;
-  background: url('../../assets/bk.jpg') no-repeat center /100% 100%;
+  background: url('/static/bk.jpg') no-repeat center /100% 100%;
   position: relative;
 }
 </style>

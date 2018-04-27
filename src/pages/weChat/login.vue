@@ -4,13 +4,13 @@
     <div class="form-group">
       <label class="sr-only" for="account"></label>
       <div class="col-lg-12">
-        <input type="text" id="account" class="form-control" maxlength="16" placeholder="输入账号/用户名">
+        <input type="text" id="account" v-model="users.account" class="form-control" maxlength="16" placeholder="输入账号/用户名">
       </div>
     </div>
     <div class="form-group">
       <label for="password" class="sr-only"></label>
       <div class="col-lg-12">
-        <input type="password" id="password" class="form-control" maxlength="16" placeholder="输入密码">
+        <input type="password" id="password" v-model="users.password" class="form-control" maxlength="16" placeholder="输入密码">
       </div>
     </div>
     <div class="from-group sr-only">
@@ -51,7 +51,22 @@ export default {
   name: 'weChat',
   data () {
     return {
+      users: {
+        account: '',
+        password: ''
+      },
+      isLogin: false
     }
+  },
+  created () {
+    let self = this
+    this.$socket.on('usersIsLogin', (val) => {
+      self.isLogin = val
+      // console.log(self.isLogin)
+    })
+    this.$socket.on('userNotExists', () => {
+      alert('当前用户不存在，请注册')
+    })
   },
   methods: {
     userRegister () {
@@ -59,7 +74,18 @@ export default {
       this.$emit('hideLogin', false)
     },
     login () {
-      this.eventBus.$emit('showPanel')
+      // console.log(this.isLogin)
+      // if (!this.isLogin) {
+      //   this.isLogin = true
+      //   this.users.isLogin = true
+      //   this.$socket.emit('login', this.users)
+      //   this.eventBus.$emit('showPanel')
+      // } else {
+      //   alert('用户已登录')
+      // }
+      this.$socket.emit('login', this.users)
+      // 更新用户信息
+      // this.$socket.emit('login', this.users)
     }
   }
 }

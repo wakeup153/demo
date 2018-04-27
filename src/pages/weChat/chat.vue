@@ -4,23 +4,23 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-lg-offset-3 chat-panel">
         <div class="row header">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <span class="glyphicon glyphicon-menu-left"></span>
+            <span class="glyphicon glyphicon-menu-left" @click="showPanel"></span>
             {{title}}
           </div>
         </div>
-        <div class="row content">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <ul class="msgList">
-              <li v-for="(items, key) in chatMsg" :key="key">
-                <img :src="items.headshot" alt="" width="34">
-                <div class="msg" style="word-wrap:break-word">{{items.msg}}</div>
-              </li>
-            </ul>
+        <div class="row content" ref="contentBox">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ref="msgBox">
+            <div class="msg-container" :class="{msg_sender: items.isSend}" v-for="(items, key) in chatMsg" :key="key">
+              <img :src="items.headshot" class="chat_head" width="34">
+              <p class="chat_nick">{{items.nickName}}</p>
+              <p class="msg_content">{{items.msg}}</p>
+            </div>
           </div>
         </div>
         <div class="row footer">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <textarea class="message" rows="1"></textarea>
+            <textarea class="message" rows="1" @keyup.enter="sendMsg($event)" v-model="msg"></textarea>
+            <!-- <input class="message" type="text" @keyup.enter="sendMsg"> -->
             <span class="glyphicon glyphicon-picture"></span>
             <span class="glyphicon glyphicon-facetime-video"></span>
             <input class="sendImg" accept="image/*" type="file">
@@ -31,7 +31,8 @@
   </div>
 </template>
 <script>
-
+import {createNamespacedHelpers} from 'vuex'
+const {mapState} = createNamespacedHelpers('socketStore')
 export default {
   name: 'MainPanel',
   data () {
@@ -39,21 +40,63 @@ export default {
       title: '张三',
       senderHeadshot: '/static/ec560722511c5c1c!400x400_big.jpg',
       receiverHeadshot: '/static/5c4158249f09e37b!400x400_big.jpg',
+      receiver: null,
+      msg: '',
       chatMsg: [
         {
+          nickName: 'ben',
           headshot: '/static/ec560722511c5c1c!400x400_big.jpg',
-          msg: 'abcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-          time: '2017-10-11'
+          msg: 'abcaaaaaaaaaaaaaaaaaaaaaaaa',
+          time: '2017-10-11',
+          isSend: false
         },
         {
+          nickName: '张三',
           headshot: '/static/5c4158249f09e37b!400x400_big.jpg',
-          msg: 'abc',
-          time: '2017-10-11'
+          msg: 'abcaaaaa',
+          time: '2017-10-11',
+          isSend: false
+        },
+        {
+          nickName: 'ben',
+          headshot: '/static/ec560722511c5c1c!400x400_big.jpg',
+          msg: 'abcaaaaa',
+          time: '2017-10-11',
+          isSend: true
+        },
+        {
+          nickName: '张三',
+          headshot: '/static/ec560722511c5c1c!400x400_big.jpg',
+          msg: 'abcaaaaa',
+          time: '2017-10-11',
+          isSend: false
+        },
+        {
+          nickName: 'ben',
+          headshot: '/static/ec560722511c5c1c!400x400_big.jpg',
+          msg: 'abcaaaaa',
+          time: '2017-10-11',
+          isSend: true
+        },
+        {
+          nickName: '张三',
+          headshot: '/static/ec560722511c5c1c!400x400_big.jpg',
+          msg: 'abcaaaaa',
+          time: '2017-10-11',
+          isSend: false
         }
       ]
     }
   },
+  computed: {
+    ...mapState([
+      'personInfor'
+    ])
+  },
   mounted () {
+    this.receiver = this.personInfor
+    this.title = this.receiver.nickname
+    console.log(this.receiver)
   },
   methods: {
     toggleBar (index) {
@@ -76,6 +119,19 @@ export default {
       this.$refs.bar[index].style.background = 'radial-gradient(circle at center, #333, #272727)'
       // 显示点击的组件
       this.barControlList[index].isShow = true
+    },
+    sendMsg (evt) {
+      this.chatMsg.push({
+        nickName: this.title,
+        headshot: this.senderHeadshot,
+        msg: this.msg.trim(),
+        time: '2017-10-11',
+        isSend: true
+      })
+      this.msg = ''
+    },
+    showPanel () {
+      this.eventBus.$emit('returnMainPanel')
     }
   }
 }
@@ -114,7 +170,6 @@ export default {
 .container-fluid > .row > .chat-panel .header div {
   position: relative;
   overflow: hidden;
-  /* background: red; */
 }
 .container-fluid > .row > .chat-panel .header .glyphicon-menu-left {
   position: absolute;
@@ -122,38 +177,46 @@ export default {
   cursor: pointer;
 }
 .container-fluid > .row > .chat-panel .content {
-  /* background: #fff; */
   height: 88%;
   background: rgb(248, 243, 243);
   overflow-y: scroll;
   color: #222;
 }
-.container-fluid > .row > .chat-panel .content  .msgList li {
-  margin-top: 10px;
-  background: red;
-  position: relative;
-  height: auto;
+.container-fluid > .row > .chat-panel .content  .msg-container {
+  margin: 16px 0;
+  padding:0 10px;
 }
-.container-fluid > .row > .chat-panel .content  .msgList li:nth-child(odd) .msg  {
-  position: absolute;
-  left: 46px;
+.container-fluid > .row > .chat-panel .content  .msg-container .chat_head {
+  float: left;
+  margin-right: 10px;
+  border-radius: 4px;
 }
-.container-fluid > .row > .chat-panel .content  .msgList li:nth-child(even) {
+.container-fluid > .row > .chat-panel .content  .msg-container .chat_nick {
+  margin-bottom: 10px;
+}
+.container-fluid > .row > .chat-panel .content  .msg-container .msg_content {
+  display: inline-block;
+  word-break: break-all;
+  margin-left: 40px;
+  max-width: 90%;
+  max-height: 50%;
+  padding: 10px 5px;
+  border-radius: 5px;
+  background-color: rgb(6, 224, 53);
+}
+.container-fluid > .row > .chat-panel .content  .msg_sender {
   text-align: right;
 }
-.container-fluid > .row > .chat-panel .content  .msgList li:nth-child(even) .msg {
-  position: absolute;
-  right: 46px;
+.container-fluid > .row > .chat-panel .content  .msg_sender .chat_head {
+  float: right;
+  margin-left: 10px;
 }
-.container-fluid > .row > .chat-panel .content  .msgList li  img {
-  border-radius: 5px;
+.container-fluid > .row > .chat-panel .content  .msg_sender .chat_nick {
+  text-align: right;
 }
-.container-fluid > .row > .chat-panel .content  .msgList li .msg {
-  display: inline-block;
-  /* max-width: 70%; */
-  background: rgb(8, 216, 88);
-  border-radius: 4px;
-  color: #fff;
+.container-fluid > .row > .chat-panel .content  .msg_sender .msg_content {
+  text-align: left;
+  margin-right: 40px;
 }
 .container-fluid > .row > .chat-panel .footer {
   position: fixed;
@@ -208,12 +271,6 @@ export default {
   }
 }
 @media screen and (min-width: 900px){
- /* .container-fluid > .row > .chat-panel .content {
-   height: 90%;
- } */
- /* .container-fluid > .row > .chat-panel .footer .message  {
-   width: 90%;
- } */
  .container-fluid > .row > .chat-panel .footer .message {
    width: 90%;
  }

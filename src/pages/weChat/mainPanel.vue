@@ -4,7 +4,7 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-lg-offset-3 chat-panel">
         <div class="row header">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            {{title}}
+            {{title}}<b v-if="barControlList[1].isShow" style="font-weight: normal; letter-spacing: 0; font-size: 14px;">({{onlineCount}}人在线)</b>
             <span class="glyphicon glyphicon-search" v-if="isShowSearch"></span>
           </div>
         </div>
@@ -39,6 +39,7 @@ export default {
   data () {
     return {
       title: '消息',
+      onlineCount: 0,
       isShowSearch: false,
       barControlList: [
         {
@@ -67,6 +68,14 @@ export default {
   mounted () {
     this.$refs.icons[0].src = '/static/' + this.icons[0]
     this.$refs.bar[0].style.background = 'radial-gradient(circle at center, #333, #272727)'
+    // this.$socket.emit('onlineCount')
+  },
+  created () {
+    this.$socket.emit('onlineCount')
+    // 获取在线人数
+    this.$socket.on('onlineCount', count => {
+      this.onlineCount = count
+    })
   },
   methods: {
     toggleBar (index) {
@@ -89,6 +98,9 @@ export default {
       this.$refs.bar[index].style.background = 'radial-gradient(circle at center, #333, #272727)'
       // 显示点击的组件
       this.barControlList[index].isShow = true
+      if (this.barControlList[1].isShow) {
+        this.$socket.emit('onlineUser')
+      }
     }
   },
   components: {
